@@ -7,6 +7,7 @@ from project.app import app, db
 
 TEST_DB = "test.db"
 
+
 @pytest.fixture
 def client():
     BASE_DIR = Path(__file__).resolve().parent.parent
@@ -18,6 +19,7 @@ def client():
         db.create_all()  # setup
         yield app.test_client()  # tests run here
         db.drop_all()  # teardown
+
 
 def login(client, username, password):
     """Login helper function"""
@@ -33,13 +35,14 @@ def logout(client):
     return client.get("/logout", follow_redirects=True)
 
 
-def test_index():
-    tester = app.test_client()
-    response = tester.get("/", content_type="html/text")
+def test_index(client):
+    response = client.get("/", content_type="html/text")
+    assert response.status_code == 200
 
 
 def test_database():
     assert Path("project/flaskr.db").is_file()
+
 
 def test_empty_db(client):
     """Ensure database is blank"""
@@ -70,6 +73,7 @@ def test_messages(client):
     assert b"No entries here so far" not in rv.data
     assert b"&lt;Hello&gt;" in rv.data
     assert b"<strong>HTML</strong> allowed here" in rv.data
+
 
 def test_delete_message(client):
     """Ensure the messages are being deleted"""
