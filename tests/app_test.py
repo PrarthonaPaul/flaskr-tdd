@@ -19,7 +19,6 @@ def client():
         yield app.test_client()  # tests run here
         db.drop_all()  # teardown
 
-
 def login(client, username, password):
     """Login helper function"""
     return client.post(
@@ -40,7 +39,7 @@ def test_index():
 
 
 def test_database():
-    assert Path("flaskr.db").is_file()
+    assert Path("project/flaskr.db").is_file()
 
 def test_empty_db(client):
     """Ensure database is blank"""
